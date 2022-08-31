@@ -2,6 +2,7 @@ package com.tushar.g2g.g2g.services;
 
 
 import com.tushar.g2g.g2g.entity.User;
+import com.tushar.g2g.g2g.exceptions.ProductNotFoundException;
 import com.tushar.g2g.g2g.model.userModel;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,22 +39,29 @@ public class userServicesImpl implements userServices{
 
     @Override
     public userModel getAllById(Long id) {
-        User user = userRepositories.findById(id).get();
-        userModel userModel = new userModel();
-        BeanUtils.copyProperties(user, userModel);
-        return userModel;
+        if (userRepositories.findById(id).isPresent()) {
+            User user = userRepositories.findById(id).get();
+            userModel userModel = new userModel();
+            BeanUtils.copyProperties(user, userModel);
+            return userModel;
+        } else {
+            throw new ProductNotFoundException();
+        }
     }
 
     @Override
     public boolean deleteItem(Long id) {
+        if(userRepositories.findById(id).isPresent()){
         User user = userRepositories.findById(id).get();
         userRepositories.delete(user);
         return true;
+        } else {throw new ProductNotFoundException();}
 
     }
 
     @Override
     public User updateByid(Long id, Map<Object, Object> objectMap) {
+        if(userRepositories.findById(id).isPresent()){
         User user = userRepositories.findById(id).get();
         objectMap.forEach((key, value) -> {
             Field field = ReflectionUtils.findField(User.class, (String) key);
@@ -61,6 +69,7 @@ public class userServicesImpl implements userServices{
             ReflectionUtils.setField(field, user, value);
         });
         return userRepositories.save(user);
+        } else { throw new ProductNotFoundException();}
 
     }
 

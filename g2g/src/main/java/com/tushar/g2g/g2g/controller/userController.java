@@ -22,7 +22,7 @@ public class userController {
         this.userServices = userServices;
     }
 
-    @PostMapping("/item")
+    @PostMapping("/items")
     public userModel postItem(@RequestBody userModel userModel){
          return userServices.postItem(userModel);
 
@@ -32,14 +32,14 @@ public class userController {
         return userServices.getAll();
     }
 
-    @GetMapping("/items/{id}/id")
+    @GetMapping("/items/{id}")
     public ResponseEntity<userModel> getAllById(@PathVariable Long id){
         userModel userModel = null;
          userModel = userServices.getAllById(id);
          return ResponseEntity.ok(userModel);
     }
 
-    @PutMapping("/items/{id}/id")
+    @DeleteMapping("/items/{id}")
     public ResponseEntity<Map<String, Boolean>> deleteItem(@PathVariable Long id){
         boolean deleted = false;
         deleted = userServices.deleteItem(id);
@@ -48,7 +48,7 @@ public class userController {
         return ResponseEntity.ok(response);
     }
 
-    @PatchMapping("/items/{id}/id")
+    @PatchMapping("/items/{id}")
     public User updateByid(@PathVariable Long id, @RequestBody Map<Object, Object> objectMap){
         return userServices.updateByid(id, objectMap);
 
